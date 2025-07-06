@@ -1,0 +1,22 @@
+-- This PL/SQL block sends reminders to customers about their upcoming loan due dates.
+DECLARE
+    CURSOR c_loans IS
+        SELECT LoanID, CustomerID, DueDate
+        FROM Loans
+        WHERE DueDate <= SYSDATE + 30;
+
+    v_customer_name VARCHAR2(100);
+
+BEGIN
+    FOR rec IN c_loans LOOP
+        SELECT Name INTO v_customer_name
+        FROM Customers
+        WHERE CustomerID = rec.CustomerID;
+
+        DBMS_OUTPUT.PUT_LINE(
+            'Reminder: Dear ' || v_customer_name || 
+            ', your loan (ID: ' || rec.LoanID || 
+            ') is due on ' || TO_CHAR(rec.DueDate, 'DD-MON-YYYY') || '.'
+        );
+    END LOOP;
+END;

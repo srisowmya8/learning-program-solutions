@@ -1,0 +1,17 @@
+-- This PL/SQL block updates the loan interest rates for customers older than 60 years.
+DECLARE
+    CURSOR c_customers IS
+        SELECT CustomerID, LoanInterestRate
+        FROM Customers
+        WHERE Age > 60;
+
+BEGIN
+    FOR rec IN c_customers LOOP
+        UPDATE Customers
+        SET LoanInterestRate = LoanInterestRate - 1
+        WHERE CustomerID = rec.CustomerID;
+    END LOOP;
+
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Interest rates updated for customers above 60.');
+END;
